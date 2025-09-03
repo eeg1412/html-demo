@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>OpenLayers 世界地图示例</title>
-    <link rel="stylesheet" href="/ol/ol.css" />
+    <link rel="stylesheet" href="ol/ol.css" />
     <style>
       html,
       body {
@@ -76,7 +76,7 @@
       <div id="popup-content"></div>
     </div>
 
-    <script src="/ol/ol.js"></script>
+    <script src="ol/ol.js"></script>
     <script>
       // 配置常量
       const CONFIG = {
@@ -154,7 +154,7 @@
       // 加载世界地图数据
       const loadWorldData = async () => {
         try {
-          const response = await fetch('/world.geojson')
+          const response = await fetch('world.geojson')
           if (!response.ok) throw new Error('本地 world.geojson 未找到')
 
           const geojson = await response.json()
