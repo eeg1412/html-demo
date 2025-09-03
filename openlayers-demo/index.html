@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OpenLayers 世界地图示例</title>
+    <link rel="stylesheet" href="/ol/ol.css" />
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      /* 使用 flex 布局，controls 固定高度，map 填满剩余空间 */
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      #map {
+        width: 100%;
+        flex: 1 1 auto;
+        min-height: 0; /* 允许 flex 子项正确收缩 */
+      }
+      .controls {
+        flex: 0 0 90px;
+        height: 90px;
+        padding: 10px;
+        box-sizing: border-box;
+        background: #f7f7f7;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .controls input {
+        width: 120px;
+        padding: 6px;
+      }
+      .controls button {
+        padding: 6px 10px;
+      }
+      .tooltip {
+        background: rgba(0, 0, 0, 0.75);
+        color: #fff;
+        padding: 6px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+        transform: translate(-50%, -120%);
+      }
+      .tooltip:after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: -6px;
+        transform: translateX(-50%);
+        border-width: 6px 6px 0 6px;
+        border-style: solid;
+        border-color: rgba(0, 0, 0, 0.75) transparent transparent transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="controls">
+      <label
+        >经度: <input id="lon" type="number" step="0.000001" placeholder="0"
+      /></label>
+      <label
+        >纬度: <input id="lat" type="number" step="0.000001" placeholder="0"
+      /></label>
+      <label>标签: <input id="label" type="text" placeholder="可选" /></label>
+      <button id="add">添加标记</button>
+    </div>
+    <div id="map"></div>
+    <div id="popup" class="tooltip" style="display: none; position: absolute">
+      <div id="popup-content"></div>
+    </div>
+
+    <script src="/ol/ol.js"></script>
+    <script>
+      // 配置常量
+      const CONFIG = {
+        WORLD_EXTENT: ol.proj.get('EPSG:3857').getExtent(),
+        INITIAL_CENTER: [0, 20],
+        INITIAL_ZOOM: 1,
+        MIN_ZOOM: 0,
+        MAX_ZOOM: 8
+      }
+
+      // 样式配置
+      const STYLES = {
+        marker: new ol.style.Style({
+          image: new ol.style.Circle({
+            radius: 8,
+            fill: new ol.style.Fill({ color: '#ff5722' }),
+            stroke: new ol.style.Stroke({ color: '#fff', width: 2 })
+          })
+        }),
+        markerText: label =>
+          new ol.style.Text({
+            text: label || '',
+            offsetY: -18,
+            fill: new ol.style.Fill({ color: '#000' }),
+            stroke: new ol.style.Stroke({ color: '#fff', width: 2 }),
+            font: '12px sans-serif'
+          }),
+        world: new ol.style.Style({
+          fill: new ol.style.Fill({ color: '#e6f0ff' }),
+          stroke: new ol.style.Stroke({ color: '#aac', width: 1 })
+        })
+      }
+
+      // 创建图层
+      const markerSource = new ol.source.Vector({ wrapX: false })
+      const markerLayer = new ol.layer.Vector({
+        source: markerSource,
+        style: feature => {
+          const style = STYLES.marker.clone()
+          style.setText(STYLES.markerText(feature.get('label')))
+          return style
+        }
+      })
+
+      const worldSource = new ol.source.Vector({ wrapX: false })
+      const worldLayer = new ol.layer.Vector({
+        source: worldSource,
+        style: STYLES.world
+      })
+
+      // 创建地图
+      const map = new ol.Map({
+        target: 'map',
+        layers: [worldLayer, markerLayer],
+        view: new ol.View({
+          center: ol.proj.fromLonLat(CONFIG.INITIAL_CENTER),
+          zoom: CONFIG.INITIAL_ZOOM,
+          minZoom: CONFIG.MIN_ZOOM,
+          maxZoom: CONFIG.MAX_ZOOM,
+          extent: CONFIG.WORLD_EXTENT
+        })
+      })
+
+      // 弹窗设置
+      const popup = document.getElementById('popup')
+      const popupContent = document.getElementById('popup-content')
+      const overlay = new ol.Overlay({
+        element: popup,
+        positioning: 'bottom-center',
+        stopEvent: false,
+        offset: [0, -12]
+      })
+      map.addOverlay(overlay)
+
+      // 加载世界地图数据
+      const loadWorldData = async () => {
+        try {
+          const response = await fetch('/world.geojson')
+          if (!response.ok) throw new Error('本地 world.geojson 未找到')
+
+          const geojson = await response.json()
+          const features = new ol.format.GeoJSON().readFeatures(geojson, {
+            featureProjection: 'EPSG:3857'
+          })
+          worldSource.addFeatures(features)
+        } catch (error) {
+          console.warn('使用默认世界地图:', error.message)
+          // 创建简化的世界矩形
+          const rect = new ol.geom.Polygon([
+            [
+              [CONFIG.WORLD_EXTENT[0], CONFIG.WORLD_EXTENT[1]],
+              [CONFIG.WORLD_EXTENT[2], CONFIG.WORLD_EXTENT[1]],
+              [CONFIG.WORLD_EXTENT[2], CONFIG.WORLD_EXTENT[3]],
+              [CONFIG.WORLD_EXTENT[0], CONFIG.WORLD_EXTENT[3]],
+              [CONFIG.WORLD_EXTENT[0], CONFIG.WORLD_EXTENT[1]]
+            ]
+          ])
+          worldSource.addFeature(new ol.Feature({ geometry: rect }))
+        }
+      }
+
+      // 工具函数
+      const hidePopup = () => {
+        overlay.setPosition(undefined)
+        popup.style.display = 'none'
+      }
+
+      const showPopup = (coordinate, content) => {
+        popupContent.innerHTML = content
+        overlay.setPosition(coordinate)
+        popup.style.display = 'block'
+      }
+
+      const validateCoordinates = (lon, lat) => {
+        const lonNum = Number(lon)
+        const latNum = Number(lat)
+        return (
+          !isNaN(lonNum) &&
+          !isNaN(latNum) &&
+          lonNum >= -180 &&
+          lonNum <= 180 &&
+          latNum >= -90 &&
+          latNum <= 90
+        )
+      }
+
+      const addMarker = (lon, lat, label = '') => {
+        const feature = new ol.Feature({
+          geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat])),
+          label
+        })
+        markerSource.addFeature(feature)
+      }
+
+      // 事件处理
+      map.on('singleclick', evt => {
+        hidePopup()
+
+        const feature = map.forEachFeatureAtPixel(evt.pixel, f => f, {
+          layerFilter: layer => layer === markerLayer
+        })
+
+        if (feature) {
+          const coordinate = feature.getGeometry().getCoordinates()
+          const [lon, lat] = ol.proj.toLonLat(coordinate)
+          const label = feature.get('label') || '无标签'
+
+          showPopup(
+            coordinate,
+            `<strong>${label}</strong><br>经度: ${lon.toFixed(
+              6
+            )}<br>纬度: ${lat.toFixed(6)}`
+          )
+        }
+      })
+
+      map.on('pointermove', evt => {
+        if (evt.dragging) return
+        const hit = map.hasFeatureAtPixel(evt.pixel, {
+          layerFilter: layer => layer === markerLayer
+        })
+        map.getTargetElement().style.cursor = hit ? 'pointer' : ''
+      })
+
+      // 表单处理
+      document.getElementById('add').addEventListener('click', () => {
+        const lon = document.getElementById('lon').value
+        const lat = document.getElementById('lat').value
+        const label = document.getElementById('label').value
+
+        if (!lon || !lat) {
+          alert('请输入经度和纬度')
+          return
+        }
+
+        if (!validateCoordinates(lon, lat)) {
+          alert('经纬度不合法，请输入有效范围的经度(-180~180)和纬度(-90~90)')
+          return
+        }
+
+        addMarker(Number(lon), Number(lat), label)
+
+        // 清空输入框
+        document.getElementById('lon').value = ''
+        document.getElementById('lat').value = ''
+        document.getElementById('label').value = ''
+      })
+
+      // 回车键添加标记
+      ;['lon', 'lat', 'label'].forEach(id => {
+        document.getElementById(id).addEventListener('keypress', e => {
+          if (e.key === 'Enter') {
+            document.getElementById('add').click()
+          }
+        })
+      })
+
+      // 窗口大小改变时隐藏弹窗
+      window.addEventListener('resize', hidePopup)
+
+      // 初始化
+      loadWorldData()
+
+      // 添加示例标记
+      ;[
+        [0, 51.5074, '伦敦'],
+        [-74.006, 40.7128, '纽约'],
+        [139.6917, 35.6895, '东京']
+      ].forEach(([lon, lat, label]) => addMarker(lon, lat, label))
+    </script>
+  </body>
+</html>
