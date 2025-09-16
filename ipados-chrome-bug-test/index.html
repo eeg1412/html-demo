@@ -54,7 +54,7 @@
     </style>
   </head>
   <body>
-    <div class="test-body">
+    <div class="test-body" id="testBody">
       <button class="size-btn" id="showSizeBtn" aria-label="显示屏幕尺寸">
         显示尺寸
       </button>
@@ -75,7 +75,19 @@
 
         function showSizes() {
           const s = getSizes()
-          const msg = `screen: ${s.screenW} x ${s.screenH}\nviewport: ${s.innerW} x ${s.innerH}`
+          const bodyEl = document.getElementById('testBody')
+          let tbW = null
+          let tbH = null
+          if (bodyEl) {
+            const r = bodyEl.getBoundingClientRect()
+            tbW = Math.round(r.width)
+            tbH = Math.round(r.height)
+          }
+          const tbInfo =
+            tbW !== null && tbH !== null ? `\ntestBody: ${tbW} x ${tbH}` : ''
+          const msg =
+            `screen: ${s.screenW} x ${s.screenH}\nviewport: ${s.innerW} x ${s.innerH}` +
+            tbInfo
           // 使用 alert 简单展示
           alert(msg)
         }
