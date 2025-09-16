@@ -6,8 +6,11 @@
     <title>Document</title>
   </head>
   <body>
-    <div onclick="location.href='/ipados-chrome-bug-test/index.html'">
-      点击跳转
+    <!-- 使用语义化链接并在新窗口打开，添加 rel 属性防止窗口对象被窃取 -->
+    <div
+      onclick="window.open('/ipados-chrome-bug-test/index.html', '_blank', 'noopener,noreferrer')"
+    >
+      点击跳转（新窗口）
     </div>
   </body>
 </html>
