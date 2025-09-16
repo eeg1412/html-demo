@@ -33,9 +33,55 @@
           violet
         );
       }
+      /* 显示尺寸按钮样式 */
+      .size-btn {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        z-index: 10;
+        padding: 8px 12px;
+        font-size: 14px;
+        border: none;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #111;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+      .size-btn:active {
+        transform: translateY(1px);
+      }
     </style>
   </head>
   <body>
-    <div class="test-body"></div>
+    <div class="test-body">
+      <button class="size-btn" id="showSizeBtn" aria-label="显示屏幕尺寸">
+        显示尺寸
+      </button>
+    </div>
+
+    <script>
+      ;(function () {
+        const btn = document.getElementById('showSizeBtn')
+        function getSizes() {
+          // 屏幕物理/设备尺寸（通常代表设备像素或 CSS 像素，依平台而异）
+          const screenW = window.screen && window.screen.width
+          const screenH = window.screen && window.screen.height
+          // 视口（窗口）大小
+          const innerW = window.innerWidth
+          const innerH = window.innerHeight
+          return { screenW, screenH, innerW, innerH }
+        }
+
+        function showSizes() {
+          const s = getSizes()
+          const msg = `screen: ${s.screenW} x ${s.screenH}\nviewport: ${s.innerW} x ${s.innerH}`
+          // 使用 alert 简单展示
+          alert(msg)
+        }
+
+        btn.addEventListener('click', showSizes)
+      })()
+    </script>
   </body>
 </html>
