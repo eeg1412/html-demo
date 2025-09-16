@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>基本 HTML 示例</title>
+    <style>
+      .test-body {
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        position: absolute;
+        flex-direction: column;
+        justify-content: space-between;
+        contain: layout size style;
+        overflow: hidden;
+        z-index: 0;
+        /* 彩虹渐变 */
+        background: linear-gradient(
+          90deg,
+          red,
+          orange,
+          yellow,
+          green,
+          blue,
+          indigo,
+          violet
+        );
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-body"></div>
+  </body>
+</html>
