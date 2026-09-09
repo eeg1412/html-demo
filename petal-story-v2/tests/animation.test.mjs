@@ -1,0 +1,22 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {HeroAnimator,createHeroClips,smoothSource,animationState} from '../dist/hero-animation.js';
+import {WalkRig,footTarget} from '../dist/walk-rig.js';
+import {GameModel,SKILLS} from '../dist/engine.js';
+const scope={console,setTimeout,clearTimeout,performance,URL,navigator:{userAgent:'node'}};
+vm.runInNewContext(fs.readFileSync(new URL('../dist/assets/pixi.min.js',import.meta.url),'utf8'),scope);
+const P=scope.PIXI;
+function fixture(){const source=new P.TextureSource({width:512,height:512});smoothSource(source);const textures=Array.from({length:8},()=>new P.Texture({source}));const atlas={frames:textures,width:512,height:512,spec:{bodyHeight:390,baseline:480}};const clips=createHeroClips(textures,atlas,{...atlas,frames:textures.slice(0,6)},atlas);return {source,clips,animator:new HeroAnimator(P,clips,new WalkRig(P,source)),player:{dead:0,action:0,actionSerial:0,grounded:true,vx:265,facing:1,x:10,y:10}};}
+
+test('walk rig alternates both legs, updates the actual Pixi scene and freezes on pause',()=>{const {animator:a,player:p}=fixture();a.update(p,0,false);assert.equal(a.sprite.visible,false);assert.equal(a.walker.root.visible,true);const first=a.walker.legs.map(l=>l.upper.rotation);for(let i=0;i<28;i++)a.update(p,.01,false);const opposite=a.walker.legs.map(l=>l.upper.rotation);assert.ok(Math.abs(first[0]-opposite[0])>.2);assert.ok(Math.abs(first[1]-opposite[1])>.2);const phase=a.walker.phase;for(let i=0;i<60;i++)a.update(p,1/60,true);assert.equal(a.walker.phase,phase);p.vx=0;a.update(p,.01,false);assert.equal(a.sprite.visible,true);assert.equal(a.walker.root.visible,false);});
+test('each foot completes forward contact, rear stance and lifted swing, half a cycle apart',()=>{assert.ok(footTarget(0,0).x>0);assert.ok(footTarget(.5,0).x<0);assert.equal(footTarget(0,0).stance,true);assert.equal(footTarget(.5,0).stance,false);assert.ok(footTarget(.75,0).y<footTarget(.25,0).y-20);assert.deepEqual(footTarget(0,0),footTarget(1,0));});
+
+test('all three skill clips play once; a repeated attack restarts its sequence',()=>{for(const actionKind of ['slash','bolt','rain']){const {animator:a,player:p}=fixture();Object.assign(p,{actionKind,action:1,actionSerial:1});const frames=new Set();for(let i=0;i<60;i++){a.update(p,1/60,false);frames.add(a.sprite.currentFrame);}assert.equal(a.state,actionKind);const count=actionKind==='slash'?6:4;assert.equal(frames.size,count);assert.equal(a.sprite.playing,false);assert.equal(a.sprite.currentFrame,count-1);p.actionSerial++;a.update(p,0,false);assert.equal(a.sprite.currentFrame,0);assert.equal(a.sprite.playing,true);}});
+test('animation state returns to locomotion and prioritizes death and hurt',()=>{const {player:p}=fixture();assert.equal(animationState(p),'walk');p.vx=0;assert.equal(animationState(p),'idle');p.grounded=false;assert.equal(animationState(p),'jump');p.action=1;p.actionKind='hurt';assert.equal(animationState(p),'hurt');p.dead=2;assert.equal(animationState(p),'dead');});
+test('PixiJS texture source uses linear min/mag/mipmap filters and generated mipmaps',()=>{const {source}=fixture();assert.equal(source.minFilter,'linear');assert.equal(source.magFilter,'linear');assert.equal(source.mipmapFilter,'linear');assert.equal(source.autoGenerateMipmaps,true);});
+test('windup releases each skill exactly once at its impact time',()=>{for(let i=0;i<3;i++){const events=[];const g=new GameModel({},type=>events.push(type));g.monsters=[];g.useSkill(i);assert.equal(events.filter(e=>e==='skill').length,0);assert.equal(g.player.actionKind,SKILLS[i].animation);for(let j=0;j<100;j++)g.update(.01);assert.equal(events.filter(e=>e==='skill').length,1);assert.equal(g.pendingCast,null);}});
+test('death during windup cancels pending impact',()=>{const events=[];const g=new GameModel({},type=>events.push(type));g.useSkill(2);g.player.invuln=0;g.hurtPlayer(1e6);for(let i=0;i<100;i++)g.update(.01);assert.equal(g.pendingCast,null);assert.equal(events.filter(e=>e==='skill').length,0);});
+
+test('production clip durations and contact frames align with combat timing',()=>{const {clips}=fixture();for(const [i,name,contact] of [[0,'slash',3],[1,'bolt',2],[2,'rain',2]]){const frames=clips[name].frames;assert.equal(frames.reduce((sum,f)=>sum+f.time,0),SKILLS[i].duration*1000);assert.equal(frames.slice(0,contact).reduce((sum,f)=>sum+f.time,0),SKILLS[i].impact*1000);}});
