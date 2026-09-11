@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="theme-color" content="#173e39"><meta name="description" content="花铃物语：在花语原野展开属于羊角花灵的横版冒险。"><title>花铃物语 · 花语原野</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<main id="shell">
+  <header class="topbar"><a class="brand" href="./"><span class="brand-flower">✿</span><span>花铃物语<small>PETAL STORY</small></span></a><div class="region"><span>冒险区域</span><b>花语原野</b><span class="region-tag">宁静森林</span></div><nav><button id="helpBtn" class="icon-btn" aria-label="操作说明">?</button><button id="soundBtn" class="icon-btn" aria-label="开启音效" title="音效">♫<i></i></button><button id="pauseBtn" class="icon-btn" aria-label="暂停游戏" title="暂停 Esc">Ⅱ</button><button id="fullBtn" class="icon-btn" aria-label="全屏" title="全屏">⛶</button></nav></header>
+  <section id="arena" aria-label="花语原野游戏区域">
+    <div id="game"></div><div class="scene-vignette"></div>
+    <div class="player-card glass"><div id="portrait" class="portrait"></div><div class="player-info"><div class="player-title"><b>软棉棉</b><span id="level">Lv. 1</span></div><div class="class-label">花之守护者</div><div class="meter hp"><span id="hpFill"></span><small id="hpText">HP</small></div><div class="meter mp"><span id="mpFill"></span><small id="mpText">MP</small></div></div></div>
+    <div class="map-card glass"><div class="map-title"><span>✧ 花语原野</span><small>01</small></div><svg id="minimap" viewBox="0 0 250 76" aria-label="地图和人物位置"><path d="M8 64H242 M41 45H72 M102 28H138 M171 44H204"/><g id="mapMonsters"></g><circle id="mapPlayer" cx="20" cy="60" r="4"/></svg><div class="map-meta"><span>芽芽史莱姆</span><span id="monsterLevel">Lv. 1</span></div></div>
+    <div class="location-label"><span>THE WHISPERING WOODS</span><b>风吹过，花正好</b></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <div id="welcome" class="welcome glass"><span class="welcome-symbol">✧</span><div><b>你好，花之守护者</b><p>向前走走，用花的力量唤醒这片原野。</p><small class="desktop-hint">A / D 移动 · 空格跳跃 · J / K / L 释放技能</small><small class="mobile-hint">左侧移动 · 右侧跳跃 · 点击下方技能</small></div><button id="dismissWelcome" aria-label="关闭提示">×</button></div>
+    <div class="touch-movement"><button data-hold="left" aria-label="向左移动">◀</button><button data-hold="right" aria-label="向右移动">▶</button></div><button id="jumpBtn" class="touch-jump" aria-label="跳跃">↑<small>跳跃</small></button>
+    <div id="loading" class="veil"><span class="loading-flower">✿</span><h1>花铃物语</h1><p id="loadText">花语原野正在苏醒…</p></div>
+    <div id="death" class="veil hidden"><span class="death-flower">✧</span><h2>花会再次绽放</h2><p>你化作了飘散的花瓣，花铃石正呼唤你。</p><b id="respawnText">3 秒后在本地图重生</b><small>保留等级、属性与技能</small></div>
+    <div id="paused" class="veil hidden"><span class="loading-flower">❀</span><h2>让风停一会儿</h2><p>冒险已暂停</p><button id="resumeBtn" class="primary">继续冒险</button></div>
+  </section>
+  <footer class="dashboard"><div class="exp-track"><div id="xpFill"></div><span id="xpText">EXP 0 / 40</span></div><div class="bottom-row"><div class="adventure-info"><span class="tiny-label">YOUR ADVENTURE</span><strong>每一朵花，都有自己的冒险</strong><span class="save-note" id="saveNote">进度自动保存在此浏览器</span></div><div class="skillbar"><button class="skill skill-pink" data-skill="0"><kbd>J</kbd><span class="skill-art">❀</span><span class="skill-name">落花斩</span><span class="skill-level" id="sl0">Lv. 1</span><span class="cooldown" id="cd0"></span></button><button class="skill skill-teal" data-skill="1"><kbd>K</kbd><span class="skill-art">✦</span><span class="skill-name">铃光弹</span><span class="skill-level" id="sl1">Lv. 1</span><span class="cooldown" id="cd1"></span></button><button class="skill skill-gold" data-skill="2"><kbd>L</kbd><span class="skill-art">✺</span><span class="skill-name">花雨绽放</span><span class="skill-level" id="sl2">Lv. 1</span><span class="cooldown" id="cd2"></span></button></div><div class="growth-buttons"><button id="statsBtn"><span>♧</span><div>角色属性<small>CHARACTER</small></div><em id="statBadge" hidden>0</em><kbd>C</kbd></button><button id="skillsBtn"><span>✧</span><div>技能升级<small>SKILLS</small></div><em id="skillBadge" hidden>0</em><kbd>V</kbd></button></div></div><div class="footer-line"><span>花语原野 · 自由探索</span><span class="keyboard-help">A D 移动 <i>·</i> SPACE 跳跃 <i>·</i> J K L 技能</span><span id="killText">击败 0 只魔物</span></div></footer>
+</main>
+<dialog id="panel"><div class="panel-top"><span id="panelEyebrow">CHARACTER</span><button id="closePanel" aria-label="关闭面板">×</button></div><h2 id="panelTitle">角色属性</h2><div id="panelBody"></div></dialog>
+<script src="assets/pixi.min.js"></script><script type="module" src="game.js?v=13"></script>
+</body></html>
