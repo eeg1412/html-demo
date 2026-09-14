@@ -1,0 +1,50 @@
+.joystick,.touch-actions{display:none}
+.skill{touch-action:none;user-select:none;-webkit-user-select:none}
+.skill.active{filter:brightness(1.12);box-shadow:inset 0 0 0 3px #fff,0 0 15px #fff8}
+.skillbar button{ -webkit-touch-callout:none }
+@media(any-pointer:coarse),(max-width:700px){
+  #shell{min-height:0;height:100dvh}
+  .topbar{height:48px;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+  .brand{font-size:18px}.brand small,.region,.adventure-info,.footer-line,.desktop-hint{display:none}
+  .mobile-hint{display:block}.skill kbd,.keyboard-help{display:none}
+  .dashboard{height:calc(54px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
+  .bottom-row{height:48px;padding:0 14px;justify-content:flex-end}
+  #desktopSkills{display:none}.growth-buttons{flex:0;flex-direction:row;gap:12px}
+  .growth-buttons button{height:38px;min-width:104px;padding:0 10px}
+  .growth-buttons button div{font-size:12px}.growth-buttons small,.growth-buttons kbd{display:none}
+  .joystick{display:block;position:absolute;left:max(12px,env(safe-area-inset-left));bottom:16px;width:128px;height:128px;border:2px solid #ffffffa6;border-radius:50%;background:#173f4659;box-shadow:inset 0 0 0 12px #e0fff31c,0 3px 14px #14312935;z-index:7;touch-action:none;user-select:none;-webkit-user-select:none}
+  .joystick>span:not(.joystick-knob){position:absolute;color:#ffffffd9;font:20px/1 system-ui;pointer-events:none}
+  .stick-up{top:7px;left:53px}.stick-down{bottom:7px;left:53px}.stick-left{left:7px;top:52px}.stick-right{right:7px;top:52px}
+  .joystick-knob{position:absolute;left:38px;top:38px;width:48px;height:48px;border:2px solid #fff;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f8fff0,#9ebdb0);box-shadow:0 3px 9px #163e456b;pointer-events:none;will-change:transform}
+  .joystick.active{background:#245c6473;border-color:#fff}
+  .touch-actions{display:block;position:absolute;right:max(12px,env(safe-area-inset-right));bottom:12px;width:174px;height:162px;z-index:7;pointer-events:none}
+  .touch-actions .skillbar{position:relative;display:block;width:100%;height:100%;pointer-events:none}
+  .touch-actions .skill{position:absolute;width:66px;height:66px;border-radius:50%;border-width:2px;pointer-events:auto;box-shadow:inset 0 0 0 3px #fff8,0 3px 12px #18332966}
+  .touch-actions .skill[data-skill="0"]{left:0;bottom:0;width:80px;height:80px}
+  .touch-actions .skill[data-skill="1"]{right:0;bottom:26px}
+  .touch-actions .skill[data-skill="2"]{right:39px;top:0}
+  .touch-actions .skill-art{font-size:29px;line-height:30px}
+  .touch-actions .skill-name{font-size:11px;letter-spacing:0}
+  .touch-actions .skill-level{font-size:9px;margin-top:0}
+  .touch-actions .skill[data-skill="0"] .skill-art{font-size:35px;line-height:35px}
+  .touch-actions .cooldown{border-radius:50%;font-size:22px}
+  .welcome{bottom:184px;left:14px;right:14px;transform:none;width:auto;padding:10px}
+  .welcome small{font-size:11px}.welcome p{display:none}
+  .player-card{top:10px;left:12px}.map-card{top:10px;right:12px}
+}
+@media(any-pointer:coarse) and (min-width:701px){
+  .joystick{left:max(26px,env(safe-area-inset-left))}.touch-actions{right:max(26px,env(safe-area-inset-right))}
+}
+@media(max-width:360px){
+  .joystick{left:8px;width:112px;height:112px}.joystick-knob{left:30px;top:30px}
+  .stick-up,.stick-down{left:45px}.stick-left,.stick-right{top:44px}
+  .touch-actions{right:8px}
+}
+@media(max-height:500px) and (any-pointer:coarse){
+  .topbar{height:36px}.dashboard{height:calc(44px + env(safe-area-inset-bottom))}.bottom-row{height:38px}
+  .growth-buttons button{height:32px}.welcome{display:none}
+  .joystick{bottom:10px;width:112px;height:112px}.joystick-knob{left:30px;top:30px}
+  .stick-up,.stick-down{left:45px}.stick-left,.stick-right{top:44px}
+  .touch-actions{bottom:8px;height:146px}
+  .player-card{transform:scale(.76);transform-origin:top left}.map-card{transform:scale(.65);transform-origin:top right}
+}

@@ -1,0 +1,53 @@
+/* One fixed palette for every map. Opaque reading surfaces isolate text from art. */
+:root{color:#f3f4f7;background:#191c25;--dark:#f3f4f7;--muted:#c1c7d3;--pink:#f2b7d1;--ui-panel:#242936;--ui-raised:#343c4e;--ui-line:#758098}
+body{background:#191c25}
+.topbar,.dashboard{background:#191c25;color:#f3f4f7;border-color:#758098}
+.brand,.region b,.player-title,.map-title,.welcome b,.adventure-info strong{color:#f3f4f7}
+.brand-flower,.welcome-symbol,.player-title span{color:#f2d49b}
+.region,.region-tag,.class-label,.map-title small,.map-meta,.welcome p,.welcome small,.tiny-label,.save-note,.footer-line{color:#c1c7d3}
+.region-tag,.footer-line,.map-meta{border-color:#758098}
+.glass{background:#242936;color:#f3f4f7;border-color:#758098;backdrop-filter:none;box-shadow:0 4px 18px #0005}
+.icon-btn{background:#242936;color:#f3f4f7;border-color:#758098}
+.icon-btn:hover,.growth-buttons button:hover,.upgrade-row button:hover,.primary:hover{background:#46516a}
+.icon-btn i{background:#f3f4f7}
+.welcome button,.panel-top button{color:#f3f4f7}
+.portrait{background:#343c4e;border-color:#758098}
+.meter{background:#11151d}
+.hp>span{background:#943953}.mp>span{background:#285e85}
+.meter small{color:#fff;text-shadow:0 1px 2px #000;font-weight:700}
+.exp-track{background:#11151d}.exp-track>div{background:#7fc7ac}
+.exp-track>span{background:#242936;color:#f3f4f7;text-shadow:none;border-radius:4px;padding:2px 7px;top:-21px}
+#minimap path{stroke:#c1c7d3}#mapPlayer{fill:#f2b7d1;stroke:#fff}
+.location-label{background:#242936;color:#f3f4f7;opacity:1;padding:8px 14px;border:1px solid #758098;border-radius:10px}
+.scene-vignette{background:none;box-shadow:inset 0 0 80px #00000012}
+.skill,.skill-teal,.skill-gold{background:#343c4e;color:#f3f4f7;border-color:#758098;box-shadow:inset 0 0 0 2px #242936}
+.skill:hover{box-shadow:inset 0 0 0 2px #c1c7d3}
+.skill-art{color:#f2b7d1;text-shadow:none}.skill-teal .skill-art{color:#a0dfd0}.skill-gold .skill-art{color:#f2d49b}
+.skill kbd,.skill-level{color:#d1d7e2}.cooldown{background:#11151df5;color:#fff}
+.skill.active{filter:none;background:#46516a;box-shadow:inset 0 0 0 3px #fff}
+.growth-buttons button,.upgrade-row button,.primary{background:#343c4e;color:#f3f4f7;border:1px solid #758098}
+.growth-buttons button>span,.growth-buttons small,.growth-buttons kbd{color:#d1d7e2}
+.growth-buttons em{background:#f2b7d1;color:#191c25;font-weight:700}
+#toast{background:#242936;color:#f3f4f7;border-color:#758098;text-shadow:none}
+.veil,#death{background:#242936;color:#f3f4f7}
+.veil p,.veil small{color:#c1c7d3}
+.loading-flower,.death-flower{color:#f2b7d1}
+dialog{background:#242936;color:#f3f4f7;border-color:#758098}
+dialog::backdrop{background:#11151da6}
+.panel-top>span,.panel-summary,.upgrade-info small,.derived span,.help-list,.panel-foot{color:#c1c7d3}
+.panel-summary b{color:#f2d49b}.upgrade-row{border-color:#758098}
+.upgrade-icon,.derived,.help-list kbd{background:#343c4e;color:#f3f4f7;border-color:#758098}
+.help-list b{color:#f3f4f7}
+button:disabled{opacity:1;color:#c1c7d3;background:#242936;border-color:#59647a}
+button:focus-visible,a:focus-visible{outline-color:#f2d49b}
+.joystick,.joystick.active{background:#242936;border-color:#c1c7d3;box-shadow:inset 0 0 0 12px #343c4e,0 3px 14px #0005}
+.joystick>span:not(.joystick-knob){color:#fff}
+.joystick-knob{background:radial-gradient(circle at 35% 30%,#f3f4f7,#a8b4c9);border-color:#fff}
+.touch-actions .skill{box-shadow:inset 0 0 0 2px #242936,0 3px 12px #0006}
+.touch-actions .skill.active{box-shadow:inset 0 0 0 3px #fff}
+#loadProgress{display:block;appearance:none;width:min(320px,80vw);height:12px;border:1px solid #758098;border-radius:8px;overflow:hidden;background:#11151d;color:#a0dfd0}
+#loadProgress::-webkit-progress-bar{background:#11151d}
+#loadProgress::-webkit-progress-value{background:#a0dfd0}
+#loadProgress::-moz-progress-bar{background:#a0dfd0}
+#loadDetail{margin-top:12px;color:#d1d7e2;font:13px system-ui;font-variant-numeric:tabular-nums}
+.load-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:12px}
